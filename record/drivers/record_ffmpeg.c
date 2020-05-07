@@ -1041,6 +1041,7 @@ static void ffmpeg_free(void *data)
 
 static void *ffmpeg_new(const struct record_params *params)
 {
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg.\n");
    ffmpeg_t *handle     = (ffmpeg_t*)calloc(1, sizeof(*handle));
    if (!handle)
       return NULL;
@@ -1072,23 +1073,29 @@ static void *ffmpeg_new(const struct record_params *params)
          break;
    }
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (muxer).\n");
    if (!ffmpeg_init_muxer_pre(handle))
       goto error;
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (video).\n");
    if (!ffmpeg_init_video(handle))
       goto error;
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (audio).\n");
    if (handle->config.audio_enable && 
          !ffmpeg_init_audio(handle,
             params->audio_resampler))
       goto error;
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (muxer post).\n");
    if (!ffmpeg_init_muxer_post(handle))
       goto error;
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (thread).\n");
    if (!init_thread(handle))
       goto error;
 
+   RARCH_LOG("[FFmpeg]: Initializing ffmpeg (returning).\n");
    return handle;
 
 error:
